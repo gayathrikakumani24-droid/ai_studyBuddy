@@ -177,12 +177,18 @@ This project can be deployed on:
 ## 📸 Screenshots
 
 Add screenshots inside the `assets` folder and reference them:
+### Home
 
-```markdown
-![Home](assets/screenshot1.png)
-![Quiz Generator](assets/screenshot2.png)
-![Study Planner](assets/screenshot3.png)
-```
+<img width="1366" height="677" alt="Screenshot (342)" src="https://github.com/user-attachments/assets/ff13f560-c751-42cc-a823-d4ffe47d50bb" />
+
+### Quiz Generator
+
+<img width="1366" height="637" alt="Screenshot (343)" src="https://github.com/user-attachments/assets/ab6c3008-caff-4f71-a37b-0f706b615428" />
+
+### Study Planner
+
+<img width="1366" height="635" alt="Screenshot (344)" src="https://github.com/user-attachments/assets/18d970bd-42d9-420d-b93a-a18e98ac60f4" />
+
 
 ---
 
