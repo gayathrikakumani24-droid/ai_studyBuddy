@@ -2,6 +2,8 @@
 
 🌐 Live Demo: https://aistudybuddy-esn7w3y6cyxbsnhmofwtb4.streamlit.app/
 
+<img width="1366" height="677" alt="Screenshot (342)" src="https://github.com/user-attachments/assets/80fae08b-232b-46b4-a05d-694a2a2f1530" />
+
 StudyMind is an AI-powered study assistant built with Streamlit and Google's Gemini AI. It helps students learn faster by explaining concepts, summarizing notes, generating quizzes, and creating personalized study plans.
 
 ## ✨ Features
