@@ -1,32 +1,206 @@
-📚 AI-Powered Study Buddy
-An intelligent learning assistant built using Python, Streamlit, and Google Gemini API that helps students understand topics, revise notes, test knowledge, and plan studies efficiently.
-This project aims to reduce study stress by combining AI-based explanations, summaries, quizzes,  and personalized study planning in one interactive web application.
-✨ Features
+# 🧠 StudyMind – AI Study Companion
 
-🧠 Explain Topic
-Explains any given topic in simple, beginner-friendly language
-Useful for first-time learning and concept building
+🌐 Live Demo: https://aistudybuddy-esn7w3y6cyxbsnhmofwtb4.streamlit.app/
 
-📝 Summarize Notes
-Converts long study notes into short, clear bullet points
-Ideal for revision before exams
+StudyMind is an AI-powered study assistant built with Streamlit and Google's Gemini AI. It helps students learn faster by explaining concepts, summarizing notes, generating quizzes, and creating personalized study plans.
 
-❓ Quiz Generator
-Generates multiple-choice questions
-Options are properly aligned (A, B, C, D) for easy reading
-Helps students self-evaluate understanding
+## ✨ Features
 
-📅 AI Study Plan Generator
-Creates a day-wise study plan
-Takes into account:
-Subjects
-Difficulty level
-Available study days
-Allocates more time to hard subjects and includes revision
+### 💡 Explain Topics
 
-🛠️ Technologies Used
-Python
-Streamlit – for web interface
-Google Gemini API (google.genai) – for AI text generation
-HTML & CSS – for flashcard flip animation
-python-dotenv – for secure API key management
+* Explain any concept from beginner to advanced level.
+* Optional real-world examples.
+* Adjustable explanation depth:
+
+  * Beginner
+  * Intermediate
+  * Advanced
+
+### 📄 Smart Note Summarization
+
+* Paste notes directly.
+* Upload PDF documents.
+* Generate concise summaries.
+* Multiple output formats:
+
+  * Paragraph
+  * Bullet Points
+  * Key-Value Format
+
+### 📝 AI Quiz Generator
+
+* Create quizzes from:
+
+  * Topics
+  * Notes
+  * PDF documents
+* Question types:
+
+  * MCQ
+  * True/False
+  * Short Answer
+  * Mixed
+* Adjustable difficulty levels.
+* Optional answer key generation.
+
+### 📅 Personalized Study Planner
+
+* Create day-wise study schedules.
+* Based on:
+
+  * Subjects
+  * Available study days
+  * Daily study hours
+  * Difficulty level
+  * Learning goals
+
+### 🕘 Session History
+
+* Stores generated outputs during the session.
+* Download previous results.
+* Clear history anytime.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Streamlit
+* HTML
+* CSS
+
+### AI
+
+* Google Gemini API
+
+### Python Libraries
+
+* Streamlit
+* PyPDF2
+* pdfplumber
+* python-dotenv
+* google-generativeai
+
+---
+
+## 📂 Project Structure
+
+```text
+StudyMind/
+│
+├── app.py
+├── gemini_utils.py
+├── requirements.txt
+├── .env
+├── README.md
+│
+└── assets/
+    ├── Home.png
+    ├── Quiz.png
+    └── schedule.png
+```
+
+---
+
+## ⚙️ Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/gayathrikakumani24-droid/ai_studyBuddy.git
+cd studymind
+```
+
+### Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+Activate:
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / Mac
+
+```bash
+source venv/bin/activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configure Gemini API
+
+Create a `.env` file:
+
+```env
+GEMINI_API_KEY=YOUR_API_KEY
+```
+
+---
+
+## ▶️ Run Locally
+
+```bash
+streamlit run app.py
+```
+
+The application will open in:
+
+```text
+http://localhost:8501
+```
+
+---
+
+## 🚀 Deployment
+
+This project can be deployed on:
+
+* Streamlit Community Cloud
+* Hugging Face Spaces
+* Render
+* Railway
+* Vercel (frontend wrapper)
+
+---
+
+## 📸 Screenshots
+
+Add screenshots inside the `assets` folder and reference them:
+
+```markdown
+![Home](assets/screenshot1.png)
+![Quiz Generator](assets/screenshot2.png)
+![Study Planner](assets/screenshot3.png)
+```
+
+---
+
+## 🎯 Future Improvements
+
+* User authentication
+* Export to PDF
+* Dark mode
+* Flashcards
+* Progress tracking
+* Learning analytics
+
+---
+
+## 👩‍💻 Author
+
+Gayathri
+
+Computer Science & Engineering (AI & ML)
+
+Built with ❤️ using Streamlit and Gemini AI.
