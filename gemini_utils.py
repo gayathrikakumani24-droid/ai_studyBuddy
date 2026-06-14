@@ -66,7 +66,7 @@ def generate_study_plan(subjects, difficulty, days):
     return response.text
 
 
-def generate_quiz(topic, q_count=5, q_type="MCQ", q_diff="Medium", include_answers=True):
+def generate_quiz(topic, q_count, q_type="MCQ", q_diff="Medium", include_answers=True):
     """
     Generate a quiz as a JSON array of question objects.
 
