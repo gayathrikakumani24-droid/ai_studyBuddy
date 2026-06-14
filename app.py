@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-import base64
+import json
 from datetime import datetime
 from gemini_utils import explain_topic, summarize_notes, generate_quiz, generate_study_plan
 
@@ -29,6 +29,9 @@ st.markdown("""
     --muted:       #6B7170;
     --amber:       #D4820A;
     --red:         #C0392B;
+    --green:       #1A7A3E;
+    --green-dim:   #C8EAD5;
+    --red-dim:     #FAD7D3;
     --font-head:   'DM Serif Display', serif;
     --font-body:   'DM Sans', sans-serif;
     --radius:      10px;
@@ -95,7 +98,7 @@ section[data-testid="stSidebar"] hr {
     font-weight: 400;
     font-style: italic;
     margin: 0;
-    color: var(--ink);
+    color: var(--accent);
     letter-spacing: -0.02em;
 }
 .page-header .tagline {
@@ -199,7 +202,6 @@ section[data-testid="stSidebar"] hr {
     margin-top: 1.2rem;
     font-size: 0.91rem;
     line-height: 1.8;
-    white-space: pre-wrap;
     word-break: break-word;
     color: var(--ink);
     box-shadow: var(--shadow);
@@ -215,24 +217,88 @@ section[data-testid="stSidebar"] hr {
     margin-bottom: 0.35rem;
 }
 
-/* ── Upload zone ── */
-.upload-zone {
+/* ── Quiz card ── */
+.quiz-card {
     background: var(--surface);
-    border: 1.5px dashed var(--border);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.1rem 1.4rem;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow);
+}
+.quiz-q-num {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-dark);
+    margin-bottom: 0.4rem;
+}
+.quiz-q-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    line-height: 1.55;
+}
+.feedback-correct {
+    background: #E8F7EE;
+    border: 1px solid #A5D6B5;
+    border-left: 3px solid #1A7A3E;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-top: 0.7rem;
+    color: #155330;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+.feedback-wrong {
+    background: #FDF0EE;
+    border: 1px solid #E8B4AD;
+    border-left: 3px solid #C0392B;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-top: 0.7rem;
+    color: #7B1F1A;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+.score-card {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 2rem 2.4rem;
     text-align: center;
+    margin-top: 1.5rem;
+    box-shadow: var(--shadow);
+}
+.score-card .score-big {
+    font-family: var(--font-head);
+    font-size: 3.5rem;
+    color: var(--accent);
+    line-height: 1;
+}
+.score-card .score-label {
     font-size: 0.85rem;
     color: var(--muted);
-    transition: border-color 0.2s;
+    margin-top: 0.3rem;
 }
-.upload-zone:hover { border-color: var(--accent); }
+.score-card .score-msg {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-top: 0.8rem;
+}
 
-/* ── Source toggle ── */
-.source-toggle {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 0.9rem;
+/* ── Upload zone ── */
+.pdf-notice {
+    font-size: 0.78rem;
+    color: var(--accent-dark);
+    background: var(--accent-dim);
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin-top: 0.4rem;
+    display: inline-block;
 }
 
 /* ── Stat cards ── */
@@ -293,46 +359,10 @@ section[data-testid="stSidebar"] hr {
     border-radius: var(--radius) !important;
     padding: 0.5rem !important;
 }
-[data-testid="stFileUploader"]:hover {
-    border-color: var(--accent) !important;
-}
+[data-testid="stFileUploader"]:hover { border-color: var(--accent) !important; }
 [data-testid="stFileUploader"] label {
     color: var(--muted) !important;
     font-size: 0.85rem !important;
-}
-
-/* ── Input source pill selector ── */
-.pill-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 1rem;
-}
-.pill {
-    padding: 5px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: var(--surface2);
-    color: var(--muted);
-    letter-spacing: 0.03em;
-}
-.pill-active {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent-dark);
-}
-
-/* ── PDF notice ── */
-.pdf-notice {
-    font-size: 0.78rem;
-    color: var(--accent-dark);
-    background: var(--accent-dim);
-    border-radius: 6px;
-    padding: 6px 12px;
-    margin-top: 0.4rem;
-    display: inline-block;
 }
 
 /* ── Spinner ── */
@@ -340,11 +370,22 @@ section[data-testid="stSidebar"] hr {
 
 /* Divider */
 hr { border-color: var(--border) !important; margin: 1.4rem 0 !important; }
+
+/* Radio buttons */
+.stRadio > div { gap: 6px !important; }
+.stRadio label { font-size: 0.9rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ── Session state ─────────────────────────────────────────────────────────────
-for key, default in [("history", []), ("session_count", 0)]:
+for key, default in [
+    ("history", []),
+    ("session_count", 0),
+    ("quiz_questions", None),   # parsed list of question dicts
+    ("quiz_answers", {}),       # {idx: selected_option}
+    ("quiz_submitted", {}),     # {idx: True} once checked
+    ("quiz_finished", False),
+]:
     if key not in st.session_state:
         st.session_state[key] = default
 
@@ -362,7 +403,6 @@ def save_to_history(action: str, prompt: str, output: str):
 
 
 def extract_pdf_text(uploaded_file) -> str:
-    """Extract plain text from an uploaded PDF using PyPDF2."""
     try:
         import PyPDF2, io
         reader = PyPDF2.PdfReader(io.BytesIO(uploaded_file.read()))
@@ -378,6 +418,56 @@ def extract_pdf_text(uploaded_file) -> str:
             return f"[PDF extraction error: {e}]"
     except Exception as e:
         return f"[PDF extraction error: {e}]"
+
+
+def parse_quiz_json(raw: str):
+    """Try to extract and parse a JSON array from the model's raw output."""
+    import re
+    raw = raw.strip()
+
+    # 1. Strip ALL markdown code fences (```json ... ``` or ``` ... ```)
+    raw = re.sub(r"^```[a-zA-Z]*\n?", "", raw).strip()
+    raw = re.sub(r"\n?```$", "", raw).strip()
+
+    # 2. Direct parse
+    try:
+        result = json.loads(raw)
+        if isinstance(result, list):
+            return result
+        # Sometimes model wraps in {"questions": [...]}
+        if isinstance(result, dict):
+            for v in result.values():
+                if isinstance(v, list):
+                    return v
+    except json.JSONDecodeError:
+        pass
+
+    # 3. Find the outermost [...] block and parse that
+    start = raw.find("[")
+    end = raw.rfind("]")
+    if start != -1 and end != -1 and end > start:
+        try:
+            result = json.loads(raw[start:end + 1])
+            if isinstance(result, list):
+                return result
+        except json.JSONDecodeError:
+            pass
+
+    return None
+
+
+def score_message(score: int, total: int) -> str:
+    pct = score / total if total else 0
+    if pct == 1.0:
+        return "🏆 Perfect score! Outstanding work!"
+    elif pct >= 0.8:
+        return "🌟 Great job! You really know this topic."
+    elif pct >= 0.6:
+        return "👍 Good effort! Review the ones you missed."
+    elif pct >= 0.4:
+        return "📚 Keep practicing — you're getting there!"
+    else:
+        return "💪 Don't give up! Revisit the material and try again."
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -436,10 +526,12 @@ tab_explain, tab_summarize, tab_quiz, tab_plan, tab_history = st.tabs([
     "🕘 History",
 ])
 
-# ── Helper: render output ─────────────────────────────────────────────────────
+
 def render_output(label: str, content: str):
     st.markdown(f"<div class='section-label'>{label}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='output-box'>{content}</div>", unsafe_allow_html=True)
+    st.markdown("<div class='output-box'>", unsafe_allow_html=True)
+    st.markdown(content)
+    st.markdown("</div>", unsafe_allow_html=True)
     col_copy, col_dl, _ = st.columns([1, 1, 4])
     with col_copy:
         if st.button("📋 Copy", key=f"copy_{label}_{int(time.time())}"):
@@ -501,13 +593,12 @@ with tab_explain:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# TAB 2 · Summarize Notes  (with PDF upload)
+# TAB 2 · Summarize Notes
 # ─────────────────────────────────────────────────────────────────────────────
 with tab_summarize:
     st.markdown("#### Summarize Notes")
     st.caption("Paste your notes **or** upload a PDF — get a clean, revision-ready summary.")
 
-    # Source selector
     sum_source = st.radio(
         "Input source",
         ["✏️ Type / Paste", "📎 Upload PDF"],
@@ -530,8 +621,7 @@ with tab_summarize:
         word_count = len(notes_text.split()) if notes_text.strip() else 0
         if word_count:
             st.caption(f"📊 ~{word_count} words")
-
-    else:  # PDF upload
+    else:
         st.markdown('<div class="section-label">Upload a PDF</div>', unsafe_allow_html=True)
         sum_pdf = st.file_uploader(
             "pdf_sum", type=["pdf"], label_visibility="collapsed", key="sum_pdf_upload"
@@ -578,12 +668,13 @@ with tab_summarize:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# TAB 3 · Quiz Generator  (with PDF upload)
+# TAB 3 · Quiz Generator  — interactive radio-button quiz
 # ─────────────────────────────────────────────────────────────────────────────
 with tab_quiz:
     st.markdown("#### Generate a Quiz")
-    st.caption("Type a topic, paste content, **or** upload a PDF to create practice questions.")
+    st.caption("Type a topic, paste content, **or** upload a PDF — then answer interactively with instant feedback.")
 
+    # ── Input source ──
     quiz_source = st.radio(
         "Input source",
         ["✏️ Type / Paste", "📎 Upload PDF"],
@@ -603,8 +694,7 @@ with tab_quiz:
             key="quiz_input"
         )
         quiz_content = quiz_input
-
-    else:  # PDF upload
+    else:
         st.markdown('<div class="section-label">Upload a PDF</div>', unsafe_allow_html=True)
         quiz_pdf = st.file_uploader(
             "pdf_quiz", type=["pdf"], label_visibility="collapsed", key="quiz_pdf_upload"
@@ -625,6 +715,8 @@ with tab_quiz:
             st.info("Upload a PDF file to generate questions from.")
 
     st.markdown("---")
+
+    # ── Quiz settings ──
     col_e, col_f, col_g = st.columns(3)
     with col_e:
         q_count = st.number_input("Questions", min_value=3, max_value=20, value=5, key="q_count")
@@ -633,25 +725,164 @@ with tab_quiz:
     with col_g:
         q_diff = st.selectbox("Difficulty", ["Easy", "Medium", "Hard"], index=1, key="q_diff")
 
-    include_answers = st.toggle("Include answer key", value=True, key="quiz_ans")
-
+    # ── Generate button ──
     if st.button("Generate Quiz ✦", key="btn_quiz"):
         if not quiz_content.strip():
             st.warning("Enter a topic or upload a PDF first.")
         else:
-            prompt = (
-                f"Topic/Content:\n{quiz_content}\n\n"
-                f"Generate {q_count} {q_type} questions at {q_diff} difficulty."
-            )
-            if include_answers:
-                prompt += " Include correct answers after each question."
+            with st.spinner("Crafting your quiz…"):
+                raw = generate_quiz(
+                    topic=quiz_content,
+                    q_count=int(q_count),
+                    q_type=q_type,
+                    q_diff=q_diff,
+                )
+            questions = parse_quiz_json(raw)
+            if questions is None:
+                st.error("Could not parse the quiz response. See details below and try again.")
+                with st.expander("🔍 Raw AI response (for debugging)"):
+                    st.code(raw, language="text")
             else:
-                prompt += " Do NOT include answers — this is a student copy."
-            with st.spinner("Crafting questions…"):
-                output = generate_quiz(prompt)
-            label_hint = quiz_pdf.name if (quiz_source == "📎 Upload PDF" and quiz_pdf) else quiz_content[:80]
-            save_to_history("Quiz", label_hint, output)
-            render_output("Quiz", output)
+                # Reset quiz state
+                st.session_state.quiz_questions = questions
+                st.session_state.quiz_answers = {}
+                st.session_state.quiz_submitted = {}
+                st.session_state.quiz_finished = False
+                label_hint = quiz_content[:80]
+                save_to_history("Quiz", label_hint, json.dumps(questions, indent=2))
+                st.rerun()
+
+    # ── Render interactive quiz ──
+    questions = st.session_state.quiz_questions
+
+    if questions:
+        st.markdown("---")
+        total_q = len(questions)
+
+        for idx, q in enumerate(questions):
+            q_num = idx + 1
+            q_text = q.get("question", "")
+            q_options = q.get("options", [])
+            q_answer = q.get("answer", "")
+            q_explanation = q.get("explanation", "")
+            q_type_raw = q.get("type", "mcq").lower()
+
+            st.markdown(f"<div class='quiz-card'>", unsafe_allow_html=True)
+            st.markdown(f"<div class='quiz-q-num'>Question {q_num} of {total_q}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='quiz-q-text'>{q_text}</div>", unsafe_allow_html=True)
+
+            already_submitted = idx in st.session_state.quiz_submitted
+
+            if q_type_raw == "shortanswer":
+                # Short answer: text input + submit button
+                user_ans = st.text_input(
+                    "Your answer",
+                    key=f"sa_{idx}",
+                    disabled=already_submitted,
+                    label_visibility="collapsed",
+                    placeholder="Type your answer here…"
+                )
+                if not already_submitted:
+                    if st.button("Check Answer", key=f"check_{idx}"):
+                        st.session_state.quiz_answers[idx] = user_ans
+                        st.session_state.quiz_submitted[idx] = True
+                        st.rerun()
+                else:
+                    stored = st.session_state.quiz_answers.get(idx, "")
+                    st.markdown(
+                        f"<div class='feedback-correct'>"
+                        f"✅ <strong>Expected answer:</strong> {q_answer}<br>"
+                        f"<strong>Explanation:</strong> {q_explanation}"
+                        f"</div>",
+                        unsafe_allow_html=True
+                    )
+
+            else:
+                # MCQ / True-False: radio buttons
+                if q_options:
+                    disabled = already_submitted
+                    selected = st.radio(
+                        f"q_radio_{idx}",
+                        options=q_options,
+                        key=f"radio_{idx}",
+                        label_visibility="collapsed",
+                        disabled=disabled,
+                        index=None if not already_submitted else q_options.index(
+                            st.session_state.quiz_answers.get(idx, q_options[0])
+                        ) if st.session_state.quiz_answers.get(idx, q_options[0]) in q_options else 0,
+                    )
+
+                    if not already_submitted:
+                        if st.button("Submit Answer", key=f"submit_{idx}"):
+                            if selected is None:
+                                st.warning("Please select an option before submitting.")
+                            else:
+                                st.session_state.quiz_answers[idx] = selected
+                                st.session_state.quiz_submitted[idx] = True
+                                st.rerun()
+                    else:
+                        chosen = st.session_state.quiz_answers.get(idx, "")
+                        is_correct = chosen.strip().lower() == q_answer.strip().lower()
+                        if is_correct:
+                            st.markdown(
+                                f"<div class='feedback-correct'>"
+                                f"✅ <strong>Correct!</strong><br>"
+                                f"<strong>Explanation:</strong> {q_explanation}"
+                                f"</div>",
+                                unsafe_allow_html=True
+                            )
+                        else:
+                            st.markdown(
+                                f"<div class='feedback-wrong'>"
+                                f"❌ <strong>Incorrect.</strong> You chose: <em>{chosen}</em><br>"
+                                f"✅ <strong>Correct answer:</strong> {q_answer}<br>"
+                                f"<strong>Explanation:</strong> {q_explanation}"
+                                f"</div>",
+                                unsafe_allow_html=True
+                            )
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # ── Show finish button when all answered ──
+        answered_count = len(st.session_state.quiz_submitted)
+
+        if answered_count == total_q and not st.session_state.quiz_finished:
+            if st.button("🎯 See My Score", key="btn_finish"):
+                st.session_state.quiz_finished = True
+                st.rerun()
+
+        # ── Score card ──
+        if st.session_state.quiz_finished:
+            score = 0
+            for idx, q in enumerate(questions):
+                if q.get("type", "mcq").lower() == "shortanswer":
+                    # For short answer, count as correct if answer matches (loose)
+                    chosen = st.session_state.quiz_answers.get(idx, "").strip().lower()
+                    correct = q.get("answer", "").strip().lower()
+                    if chosen and correct and (chosen in correct or correct in chosen):
+                        score += 1
+                else:
+                    chosen = st.session_state.quiz_answers.get(idx, "").strip().lower()
+                    correct = q.get("answer", "").strip().lower()
+                    if chosen == correct:
+                        score += 1
+
+            msg = score_message(score, total_q)
+            st.markdown(
+                f"""<div class="score-card">
+                    <div class="score-big">{score} / {total_q}</div>
+                    <div class="score-label">Your Score</div>
+                    <div class="score-msg">{msg}</div>
+                </div>""",
+                unsafe_allow_html=True
+            )
+
+            if st.button("🔄 Retake / New Quiz", key="btn_retake"):
+                st.session_state.quiz_questions = None
+                st.session_state.quiz_answers = {}
+                st.session_state.quiz_submitted = {}
+                st.session_state.quiz_finished = False
+                st.rerun()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
