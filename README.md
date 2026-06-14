@@ -2,7 +2,9 @@
 
 🌐 Live Demo: https://aistudybuddy-esn7w3y6cyxbsnhmofwtb4.streamlit.app/
 
-<img width="1366" height="677" alt="Screenshot (342)" src="https://github.com/user-attachments/assets/80fae08b-232b-46b4-a05d-694a2a2f1530" />
+<img width="1366" height="635" alt="Screenshot (359)" src="https://github.com/user-attachments/assets/b00a8452-96a1-45bb-ad0a-ef7d5e2f2326" />
+
+
 
 StudyMind is an AI-powered study assistant built with Streamlit and Google's Gemini AI. It helps students learn faster by explaining concepts, summarizing notes, generating quizzes, and creating personalized study plans.
 
@@ -181,15 +183,20 @@ This project can be deployed on:
 Add screenshots inside the `assets` folder and reference them:
 ### Home
 
-<img width="1366" height="677" alt="Screenshot (342)" src="https://github.com/user-attachments/assets/ff13f560-c751-42cc-a823-d4ffe47d50bb" />
+
+<img width="1366" height="637" alt="Screenshot (361)" src="https://github.com/user-attachments/assets/777a25d6-a79f-462b-bd2c-0b98c267f0a7" />
+
 
 ### Quiz Generator
 
-<img width="1366" height="637" alt="Screenshot (343)" src="https://github.com/user-attachments/assets/ab6c3008-caff-4f71-a37b-0f706b615428" />
+<img width="1366" height="643" alt="Screenshot (364)" src="https://github.com/user-attachments/assets/1dfbe8c7-f025-443b-a491-cd6d72400aaf" />
+
+<img width="1366" height="629" alt="Screenshot (366)" src="https://github.com/user-attachments/assets/d0fcd7c7-85e5-4343-a84e-d8c147fa6a2d" />
 
 ### Study Planner
 
-<img width="1366" height="635" alt="Screenshot (344)" src="https://github.com/user-attachments/assets/18d970bd-42d9-420d-b93a-a18e98ac60f4" />
+<img width="1366" height="632" alt="Screenshot (367)" src="https://github.com/user-attachments/assets/c601b80a-4466-4d58-a335-eb3239e0f48c" />
+
 
 
 ---
